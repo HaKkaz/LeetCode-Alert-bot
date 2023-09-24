@@ -7,21 +7,32 @@ import (
 	"github.com/dustyRAIN/leetcode-api-go/leetcodeapi"
 )
 
-func RoundAlertAC(s *discordgo.Session) error {
+func RoundAlertAC(s *discordgo.Session, timeSlot time.Duration) error {
 	channelID := "1153931585230491658"
 
 	tracedUsers, err := readTracedList()
 	if err != nil {
 		return err
 	}
-	message := "Current Folowed Users:\n"
 
+	message := ""
 	for _, username := range tracedUsers {
-		leetcodeapi.GetUserRecentAcSubmissions(username, 1)
-		message += username + "\n"
+		userLatestAc, err := leetcodeapi.GetUserRecentAcSubmissions(username, 1)
+		if err != nil {
+			return err
+		}
+		if len(userLatestAc) == 0 {
+			continue
+		}
+		for _, ac := range userLatestAc {
+			acTimestamp := ConvertTimestampToInt64(ac.Timestamp)
+			if acTimestamp >= time.Now().Unix()-60 {
+				message += username + " solved " + ac.Title + "\n"
+			}
+		}
 	}
 
 	s.ChannelMessageSend(channelID, message)
-	time.Sleep(10 * time.Second)
+	time.Sleep(timeSlot)
 	return nil
 }

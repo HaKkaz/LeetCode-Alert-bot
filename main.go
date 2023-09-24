@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	_ "github.com/joho/godotenv/autoload"
@@ -39,9 +40,8 @@ func main() {
 	}
 
 	go func() {
-
 		for {
-			err := handler.RoundAlertAC(dg)
+			err := handler.RoundAlertAC(dg, time.Minute)
 			if err != nil {
 				fmt.Println("error sending message,", err)
 			}
@@ -82,7 +82,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if command_args[0] == "ask" && len(command_args) > 1 {
 			// Ask user solved count by difficulty.
 			if command_args[1] == "status" && len(command_args) == 3 {
-				username := command_args[1]
+				username := command_args[2]
 				message, err := handler.AskUserAcStatus(username)
 				if err != nil {
 					message = "No this user."
@@ -91,7 +91,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 
 			if command_args[1] == "ac" && len(command_args) == 3 {
-				username := command_args[1]
+				username := command_args[2]
 				message, err := handler.AskLatestAc(username)
 				if err != nil {
 					message = "No ac submission."
