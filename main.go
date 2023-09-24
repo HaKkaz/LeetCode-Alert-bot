@@ -74,25 +74,26 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// Ask user solved count by difficulty.
 		if command_args[0] == "status" && len(command_args) == 2 {
 			username := command_args[1]
-			var message string
-			if acCounts, err := handler.AskUserAcStatus(username); err != nil {
+			message, err := handler.AskUserAcStatus(username)
+			if err != nil {
 				message = "No this user."
-			} else {
-				message = fmt.Sprintf("All: %d\nEasy: %d\nMedium: %d\nHard: %d\n",
-					acCounts[0], acCounts[1], acCounts[2], acCounts[3])
 			}
 			s.ChannelMessageSend(channelID, message)
 		}
 
 		if command_args[0] == "ac" && len(command_args) == 2 {
 			username := command_args[1]
-			latestAc, err := handler.AskLatestAc(username)
-			var message string
+			message, err := handler.AskLatestAc(username)
 			if err != nil {
 				message = "No ac submission."
-			} else {
-				message = fmt.Sprintf("%s Latest Accepted Submission\n%s\n%s",
-					username, latestAc[0], latestAc[1])
+			}
+			s.ChannelMessageSend(channelID, message)
+		}
+
+		if command_args[0] == "users" && len(command_args) == 2 {
+			message, err := handler.AskTracedUsers()
+			if err != nil {
+				message = "Read traced list error."
 			}
 			s.ChannelMessageSend(channelID, message)
 		}

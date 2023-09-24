@@ -7,35 +7,41 @@ import (
 	"github.com/dustyRAIN/leetcode-api-go/leetcodeapi"
 )
 
-func AskUserAcStatus(username string) ([]int, error) {
+func AskUserAcStatus(username string) (string, error) {
 	// var userSolved leetcodeapi.UserSolveCountByDifficultyDetails
 	userSolved, err := leetcodeapi.GetUserSolveCountByDifficulty(username)
 	if err != nil {
 		fmt.Println("api error")
-		return nil, err
+		return "", err
 	}
 	acs := userSolved.SolveCount.SubmitStatsGlobal.AcSubmissionNum
 	if len(acs) == 0 {
-		return nil, errors.New("User Didn't Exist.")
+		return "", errors.New("User Didn't Exist.")
 	}
-	return []int{acs[0].Count, acs[1].Count, acs[2].Count, acs[3].Count}, nil
+
+	message := fmt.Sprintf("All: %d\nEasy: %d\nMedium: %d\nHard: %d\n",
+		acs[0].Count, acs[1].Count, acs[2].Count, acs[3].Count)
+	return message, nil
 }
 
-func AskLatestAc(username string) ([]string, error) {
+func AskLatestAc(username string) (string, error) {
 	userLatestAc, err := leetcodeapi.GetUserRecentAcSubmissions(username, 1)
 	if err != nil {
 		fmt.Println("api error")
-		return nil, err
+		return "", err
 	}
 	if len(userLatestAc) == 0 {
 		fmt.Println("There are no any ac submission.")
-		return nil, err
+		return "", err
 	}
-	ac := userLatestAc[0]
-	return []string{ac.Timestamp, ac.Title}, nil
+	latestAc := userLatestAc[0]
+	message := fmt.Sprintf("%s Latest Accepted Submission\n%s\n%s",
+		username, latestAc.Timestamp, latestAc.Title)
+
+	return message, nil
 }
 
-func skTracedUsers() (string, error) {
+func AskTracedUsers() (string, error) {
 	tracedUsers, err := readTracedList()
 	if err != nil {
 		fmt.Println("Read traced list error.")
