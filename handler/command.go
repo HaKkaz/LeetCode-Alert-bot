@@ -36,8 +36,7 @@ func AskLatestAc(username string) (string, error) {
 	}
 	latestAc := userLatestAc[0]
 	message := fmt.Sprintf("%s Latest Accepted Submission\n%s\n%s",
-		username, latestAc.Timestamp, latestAc.Title)
-
+		username, ConvertTimestampToTime(latestAc.Timestamp), latestAc.Title)
 	return message, nil
 }
 
