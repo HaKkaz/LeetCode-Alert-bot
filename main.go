@@ -39,6 +39,7 @@ func main() {
 	}
 
 	go func() {
+
 		for {
 			err := handler.RoundAlertAC(dg)
 			if err != nil {
@@ -70,32 +71,41 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		command := getCommand(m.Content)
 		command_args := strings.Split(command, " ")
 		fmt.Println(command_args)
+		fmt.Println(len(command_args))
 
-		// Ask user solved count by difficulty.
-		if command_args[0] == "status" && len(command_args) == 2 {
-			username := command_args[1]
-			message, err := handler.AskUserAcStatus(username)
-			if err != nil {
-				message = "No this user."
-			}
+		if command_args[0] == "help" && len(command_args) == 1 {
+			message := "Commands:\n!ask status [username]\n!ask ac [username]\n!ask users\n!help"
 			s.ChannelMessageSend(channelID, message)
 		}
 
-		if command_args[0] == "ac" && len(command_args) == 2 {
-			username := command_args[1]
-			message, err := handler.AskLatestAc(username)
-			if err != nil {
-				message = "No ac submission."
+		// check if command is "ask"
+		if command_args[0] == "ask" && len(command_args) > 1 {
+			// Ask user solved count by difficulty.
+			if command_args[1] == "status" && len(command_args) == 3 {
+				username := command_args[1]
+				message, err := handler.AskUserAcStatus(username)
+				if err != nil {
+					message = "No this user."
+				}
+				s.ChannelMessageSend(channelID, message)
 			}
-			s.ChannelMessageSend(channelID, message)
-		}
 
-		if command_args[0] == "users" && len(command_args) == 2 {
-			message, err := handler.AskTracedUsers()
-			if err != nil {
-				message = "Read traced list error."
+			if command_args[1] == "ac" && len(command_args) == 3 {
+				username := command_args[1]
+				message, err := handler.AskLatestAc(username)
+				if err != nil {
+					message = "No ac submission."
+				}
+				s.ChannelMessageSend(channelID, message)
 			}
-			s.ChannelMessageSend(channelID, message)
+
+			if command_args[1] == "users" && len(command_args) == 2 {
+				message, err := handler.AskTracedUsers()
+				if err != nil {
+					message = "Read traced list error."
+				}
+				s.ChannelMessageSend(channelID, message)
+			}
 		}
 	}
 }
