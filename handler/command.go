@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"os"
 
 	"github.com/dustyRAIN/leetcode-api-go/leetcodeapi"
 )
@@ -52,4 +54,46 @@ func AskTracedUsers() (string, error) {
 		message += "\n" + username
 	}
 	return message, nil
+}
+
+func checkUserExist(username string) (bool, error) {
+	file, err := os.Open("tracedList.txt")
+	if err != nil {
+		fmt.Println("Error opening file:", err)
+		return false, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text() // Get the current line as a string
+		if line == username {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func AddNewTraced(username string) (string, error) {
+	filename := "tracedList.txt"
+	exist, err := checkUserExist(username)
+	if err != nil {
+		return "Add user error when checking user duplicated!", err
+	}
+
+	if exist {
+		return "User already exist.", nil
+	}
+
+	// Open the file in append mode, create if it doesn't exist
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return "Add user error when opening file TracedList.txt!", err
+	}
+	defer file.Close()
+
+	if _, err := file.WriteString("\n" + username); err != nil {
+		return "Add user error when writing to the TracedList.txt!", err
+	}
+	return "Add new traced user successfully.", nil
 }

@@ -16,7 +16,8 @@ import (
 const prefix string = "!" // prefix of command
 
 func main() {
-	token := os.Getenv("DCToken")
+	// token := os.Getenv("DCToken")
+	token := "MTE1MzY4Nzg4MDQxNDI3MzU3Ng.G8xK8P.2tB6frr2o2GhvsUWv9eYH1Th1BFNYjTquqrnGs"
 
 	// creates a new Discord session
 	dg, err := discordgo.New("Bot " + token)
@@ -74,7 +75,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		fmt.Println(len(command_args))
 
 		if command_args[0] == "help" && len(command_args) == 1 {
-			message := "Commands:\n!ask status [username]\n!ask ac [username]\n!ask users\n!help"
+			message := "Commands:\n! ask status [username]\n! ask ac [username]\n! ask users\n! help\n! add [username]"
 			s.ChannelMessageSend(channelID, message)
 		}
 
@@ -105,6 +106,17 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					message = "Read traced list error."
 				}
 				s.ChannelMessageSend(channelID, message)
+			}
+		}
+
+		// check if command is "add"
+		if command_args[0] == "add" && len(command_args) == 2 {
+			username := command_args[1]
+			addUserMsg, err := handler.AddNewTraced(username)
+			if err != nil {
+				s.ChannelMessageSend(channelID, addUserMsg)
+			} else {
+				s.ChannelMessageSend(channelID, addUserMsg)
 			}
 		}
 	}
