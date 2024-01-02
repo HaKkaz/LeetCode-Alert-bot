@@ -3,6 +3,7 @@ package main
 import (
 	"LeetCode-Alert-bot/handler"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"strings"
@@ -10,14 +11,18 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 )
 
 const prefix string = "!" // prefix of command
 
 func main() {
-	// token := os.Getenv("DCToken")
-	token := "MTE1MzY4Nzg4MDQxNDI3MzU3Ng.G8xK8P.2tB6frr2o2GhvsUWv9eYH1Th1BFNYjTquqrnGs"
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+	token := os.Getenv("DCToken")
 
 	// creates a new Discord session
 	dg, err := discordgo.New("Bot " + token)
