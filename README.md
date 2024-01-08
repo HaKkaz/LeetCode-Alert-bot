@@ -17,6 +17,7 @@ A discord bot for leetcode study group, share member's latest AC submission auto
 2. `! ask status <username>` to get the user's AC status.
 3. `! ask ac <username>` to get the latest AC submission of the user.
 4. `! ask users` to get the list of users are being tracked.
+5. `! add <username>` to add user to traced list.
 
 ## Example
 ### Show help message
