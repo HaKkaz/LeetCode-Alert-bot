@@ -38,7 +38,7 @@ func main() {
 	// 只監聽訊息
 	dg.Identify.Intents = discordgo.IntentsGuildMessages
 
-	// 開啟連線
+	// Open the connection.
 	err = dg.Open()
 	if err != nil {
 		fmt.Println("error opening connection,", err)
