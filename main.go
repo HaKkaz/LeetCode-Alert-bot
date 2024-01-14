@@ -1,6 +1,7 @@
 package main
 
 import (
+	"LeetCode-Alert-bot/embed"
 	"LeetCode-Alert-bot/handler"
 	"fmt"
 	"log"
@@ -107,10 +108,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			if command_args[1] == "users" && len(command_args) == 2 {
 				message, err := handler.AskTracedUsers()
+				embedMessage := embed.BuildFollowedListEmbed(message)
 				if err != nil {
 					message = "Read traced list error."
 				}
-				s.ChannelMessageSend(channelID, message)
+				s.ChannelMessageSendEmbed(channelID, embedMessage)
 			}
 		}
 

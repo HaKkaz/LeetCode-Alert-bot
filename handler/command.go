@@ -49,9 +49,9 @@ func AskTracedUsers() (string, error) {
 		return "Read traced list error.", err
 	}
 
-	message := "Current Folowed Users:"
+	message := ""
 	for _, username := range tracedUsers {
-		message += "\n" + username
+		message += "👉 " + username + "\n"
 	}
 	return message, nil
 }
