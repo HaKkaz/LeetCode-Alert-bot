@@ -9,7 +9,7 @@ import (
 type QuestionResponseBody struct {
 	Data struct {
 		Question struct {
-			Id            string `json:"questionId"`
+			QuestionId    string `json:"questionId"`
 			FrontendId    string `json:"questionFrontendId"`
 			Title         string `json:"title"`
 			TitleSlug     string `json:"titleSlug"`
@@ -22,7 +22,7 @@ type QuestionResponseBody struct {
 	} `json:"data"`
 }
 
-func GetProblemDifficulty(problemName string) (string, error) {
+func GetProblemDetails(problemName string) (*QuestionResponseBody, error) {
 	var responseBody QuestionResponseBody
 	payload := fmt.Sprintf(`{
 		"query": "\n    query questionTitle($titleSlug: String!) {\n  question(titleSlug: $titleSlug) {\n    questionId\n    questionFrontendId\n    title\n    titleSlug\n    isPaidOnly\n    difficulty\n    likes\n    dislikes\n    categoryTitle\n  }\n}\n    ",
@@ -34,8 +34,14 @@ func GetProblemDifficulty(problemName string) (string, error) {
 	err := (&leetcodeapi.Util{}).MakeGraphQLRequest(payload, &responseBody)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
+	return &responseBody, nil
+}
+
+func GetProblemDifficultyAndId(problemName string) (string, string) {
+	responseBody, _ := GetProblemDetails(problemName)
+
 	fmt.Println(responseBody.Data.Question.Difficulty)
-	return responseBody.Data.Question.Difficulty, nil
+	return responseBody.Data.Question.Difficulty, responseBody.Data.Question.FrontendId
 }

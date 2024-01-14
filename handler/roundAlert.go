@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"LeetCode-Alert-bot/embed"
+	"LeetCode-Alert-bot/selfapi"
+	"fmt"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -15,7 +18,6 @@ func RoundAlertAC(s *discordgo.Session, timeSlot time.Duration) error {
 		return err
 	}
 
-	message := ""
 	for _, username := range tracedUsers {
 		userLatestAc, err := leetcodeapi.GetUserRecentAcSubmissions(username, 1)
 		if err != nil {
@@ -27,12 +29,25 @@ func RoundAlertAC(s *discordgo.Session, timeSlot time.Duration) error {
 		for _, ac := range userLatestAc {
 			acTimestamp := ConvertTimestampToInt64(ac.Timestamp)
 			if acTimestamp >= time.Now().Unix()-60 {
-				message += username + " solved " + ac.Title + "\n"
+				var (
+					problemId         string
+					problemTitle      string
+					problemSlug       string
+					problemDifficulty string
+				)
+
+				problemTitle = ac.Title
+				problemSlug = ac.TitleSlug
+				problemDifficulty, problemId = selfapi.GetProblemDifficultyAndId(problemSlug)
+
+				embed.SendAcceptedEmbed(channelID, username, problemId, problemTitle, problemDifficulty, s)
+
+				debugMsg := fmt.Sprintf("%s accepted %s", username, problemTitle)
+				fmt.Println(debugMsg)
 			}
 		}
 	}
 
-	s.ChannelMessageSend(channelID, message)
 	time.Sleep(timeSlot)
 	return nil
 }

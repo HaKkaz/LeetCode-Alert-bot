@@ -27,3 +27,7 @@ func ConvertTimestampToInt64(strTimestamp string) int64 {
 	}
 	return unixTimestamp
 }
+
+func GetCurrentUnixTimestampStr() string {
+	return strconv.FormatInt(time.Now().Unix(), 10)
+}
