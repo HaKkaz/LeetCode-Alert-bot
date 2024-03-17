@@ -1,6 +1,8 @@
 # LeetCode-Alert-bot
 A discord bot for leetcode study group, share member's latest AC submission automatically.
 
+<img src="image/sample.jpg" width="200">
+
 ## LICENSE
 LeetCode-Alert-Bot © 2023 by Anthony Lin is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1)
 
