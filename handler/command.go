@@ -75,6 +75,10 @@ func checkUserExist(username string) (bool, error) {
 }
 
 func AddNewTraced(username string) (string, error) {
+	if username == "" {
+		return "Username is empty.", nil
+	}
+
 	filename := "tracedList.txt"
 	exist, err := checkUserExist(username)
 	if err != nil {
