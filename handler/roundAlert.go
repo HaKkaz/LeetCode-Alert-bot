@@ -4,6 +4,7 @@ import (
 	"LeetCode-Alert-bot/embed"
 	"LeetCode-Alert-bot/selfapi"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -11,7 +12,7 @@ import (
 )
 
 func RoundAlertAC(s *discordgo.Session, timeSlot time.Duration) error {
-	channelID := "1153931585230491658"
+	channelID := os.Getenv("DCChannel")
 
 	tracedUsers, err := readTracedList()
 	if err != nil {

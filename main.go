@@ -19,7 +19,7 @@ import (
 const prefix string = "!" // prefix of command
 
 func main() {
-	err := godotenv.Load(".env")
+	err := godotenv.Overload(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
